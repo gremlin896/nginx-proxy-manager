@@ -1,32 +1,28 @@
-# WARNING: This is a DEVELOPMENT docker-compose file, it should not be used for production.
 version: "2"
 services:
   app:
-    image: jc21/nginx-proxy-manager-base:latest
+    image: jc21/nginx-proxy-manager:2
+    restart: always
     ports:
-      - 8080:80
-      - 8081:81
-      - 8443:443
-    environment:
-      - NODE_ENV=development
-      - FORCE_COLOR=1
+      - 80:80
+      - 81:81
+      - 443:443
     volumes:
-      - ./data/letsencrypt:/etc/letsencrypt
-      - .:/app
-      - ./rootfs/etc/nginx:/etc/nginx
-    working_dir: /app
+      - ./config.json:/app/config/production.json
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
     depends_on:
       - db
-    links:
-      - db
-    command: node --max_old_space_size=250 --abort_on_uncaught_exception node_modules/nodemon/bin/nodemon.js
-  db:
-    image: mariadb:10.3.7
     environment:
-      MYSQL_ROOT_PASSWORD: "npm"
-      MYSQL_DATABASE: "npm"
-      MYSQL_USER: "npm"
-      MYSQL_PASSWORD: "npm"
+    # if you want pretty colors in your docker logs:
+    - FORCE_COLOR=1
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "password123"
+      MYSQL_DATABASE: "nginxproxymanager"
+      MYSQL_USER: "nginxproxymanager"
+      MYSQL_PASSWORD: "password123"
     volumes:
-      - ./config/my.cnf:/etc/mysql/conf.d/npm.cnf
       - ./data/mysql:/var/lib/mysql

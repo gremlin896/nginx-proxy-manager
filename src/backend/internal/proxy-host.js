@@ -163,7 +163,7 @@ const internalProxyHost = {
                 // Add domain_names to the data in case it isn't there, so that the audit log renders correctly. The order is important here.
                 data = _.assign({}, {
                     domain_names: row.domain_names
-                },data);
+                }, data);
 
                 return proxyHostModel
                     .query()
